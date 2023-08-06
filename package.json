@@ -1,0 +1,45 @@
+{
+  "name": "tribeverse-editor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "module": "dist/tribe-editor.esm.js",
+  "repository": "git@github.com:TribeVerse/tribeverse-editor.git",
+  "author": "niko0xdev <niko0xdev@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "build-css": "tailwindcss -i src/styles/index.scss -o ./dist/tribe-editor.css --minify",
+    "build-assets": "cp -f playground/*.html dist/",
+    "build-js": "rollup -c",
+    "watch-js": "rollup -c -w",
+    "watch-css": "tailwindcss -i src/styles/index.scss -o ./dist/tribe-editor.css --watch",
+    "playground": "web-dev-server",
+    "dev": "yarn clean && yarn build-assets && concurrently \"yarn playground\" \"yarn watch-js\" \"yarn watch-css\"",
+    "build": "yarn clean && yarn build-css && yarn build-assets && yarn build-js"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@web/dev-server": "^0.3.0",
+    "autoprefixer": "^10.4.14",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.46.0",
+    "esm": "^3.2.25",
+    "postcss": "^8.4.27",
+    "postcss-import": "^15.1.0",
+    "rimraf": "^5.0.1",
+    "rollup": "^3.27.2",
+    "rollup-plugin-includepaths": "^0.2.4",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "sass": "^1.64.2",
+    "tailwindcss": "^3.3.3",
+    "trix": "^2.0.5"
+  },
+  "dependencies": {
+    "debounce": "^1.2.1",
+    "mousetrap": "^1.6.5"
+  }
+}

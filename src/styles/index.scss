@@ -1,0 +1,28 @@
+/* Import TailwindCSS styles */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import "trix/dist/trix.css";
+
+@layer components {
+  trix-editor {
+    @apply flex justify-between rounded border p-4 shadow-lg !important;
+  }
+
+  trix-toolbar {
+    @apply mt-8;
+
+    .trix-button-group {
+      @apply rounded-lg border-[#ccc] !important;
+
+      .trix-button {
+        @apply border-0 border-r border-solid border-[#ccc] !important;
+      }
+
+      .trix-button:last-child {
+        @apply border-0 !important;
+      }
+    }
+  }
+}
