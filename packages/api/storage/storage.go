@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -92,8 +94,13 @@ func ServePrivateObject(c *gin.Context) {
 	objectKey = strings.ReplaceAll(objectKey, "..", "")
 	objectKey = strings.TrimPrefix(objectKey, "/")
 
+	// Set request parameters
+	filename := path.Base(objectKey)
+	reqParams := make(url.Values)
+	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=%s", filename))
+
 	// Generate a presigned URL to access the private image
-	presignedURL, err := minioClient.PresignedGetObject(context.Background(), bucketName, objectKey, time.Duration(expireTime)*time.Second, nil)
+	presignedURL, err := minioClient.PresignedGetObject(context.Background(), bucketName, objectKey, time.Duration(expireTime)*time.Second, reqParams)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate presigned URL"})
 		return
