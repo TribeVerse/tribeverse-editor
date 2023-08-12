@@ -4,5 +4,5 @@ export default {
   debug: true,
   nodeResolve: true,
   appIndex: "dist/index.html",
-  rootDir: "dist"
+  rootDir: "dist",
 };
