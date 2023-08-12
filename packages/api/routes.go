@@ -8,6 +8,7 @@ import (
 func initRoutes(r *gin.Engine) {
 	recordGroup := r.Group("/storage")
 	{
-		recordGroup.GET("/signed-url", storage.GenerateUploadURL)
+		recordGroup.GET("/:key", storage.GenerateUploadURL)
+		recordGroup.POST("/upload-token", storage.GenerateUploadURL)
 	}
 }

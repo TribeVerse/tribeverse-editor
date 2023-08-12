@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -70,4 +71,34 @@ func GenerateUploadURL(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"upload_url": uploadURL})
+}
+
+func ServePrivateObject(c *gin.Context) {
+	bucketName := os.Getenv("MINIO_BUCKET")
+	expireTimeStr := os.Getenv("MINIO_UPLOAD_EXPIRE_TIME")
+
+	expireTime, err := strconv.Atoi(expireTimeStr)
+	if err != nil || expireTime <= 0 {
+		expireTime = 1000
+	}
+
+	minioClient, err := getMinioClient()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	objectKey := c.Param("key")
+	objectKey = strings.ReplaceAll(objectKey, "..", "")
+	objectKey = strings.TrimPrefix(objectKey, "/")
+
+	// Generate a presigned URL to access the private image
+	presignedURL, err := minioClient.PresignedGetObject(context.Background(), bucketName, objectKey, time.Duration(expireTime)*time.Second, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate presigned URL"})
+		return
+	}
+
+	// Redirect to the presigned URL to serve the private image
+	c.Redirect(http.StatusTemporaryRedirect, presignedURL.String())
 }
